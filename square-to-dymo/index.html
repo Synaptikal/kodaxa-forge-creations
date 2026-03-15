@@ -106,7 +106,7 @@
     </div>
   </div>
 
-  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
+  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://buymeacoffee.com/synaptik" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
 
 <script>
 const SOURCE_MAPS={square_items:{required:["Item Name","Price"],optional:["Variation Name","SKU","Description"],transform:r=>({Label_Title:r["Item Name"]||"",Label_Subtitle:r["Variation Name"]||r["Description"]||"",Label_SKU:r["SKU"]||"",Label_Price:r["Price"]?`$${parseFloat(r["Price"]).toFixed(2)}`:""})},square_orders:{required:["Product Name","Product Quantity"],optional:["Product Options"],transform:r=>({Label_Title:r["Product Name"]||"",Label_Subtitle:r["Product Options"]||"",Label_Quantity:r["Product Quantity"]||""})}};

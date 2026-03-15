@@ -106,7 +106,7 @@
     </div>
   </div>
 
-  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
+  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://buymeacoffee.com/synaptik" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
 
 <script>
 const SOURCE_MAPS={clover_items:{required:["Name","Price"],optional:["SKU","Description","Category","Quantity"],transform:r=>({Label_Title:r["Name"]||"",Label_Category:r["Category"]||"",Label_SKU:r["SKU"]||"",Label_Price:r["Price"]?`$${parseFloat(r["Price"]).toFixed(2)}`:"",Label_Stock:r["Quantity"]||""})},clover_orders:{required:["Name","Quantity"],optional:["Modifiers","Price"],transform:r=>({Label_Title:r["Name"]||"",Label_Options:r["Modifiers"]||"",Label_Quantity:r["Quantity"]||"",Label_Price:r["Price"]?`$${parseFloat(r["Price"]).toFixed(2)}`:""})}};

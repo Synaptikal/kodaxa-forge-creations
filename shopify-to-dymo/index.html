@@ -106,7 +106,7 @@
     </div>
   </div>
 
-  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
+  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://buymeacoffee.com/synaptik" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
 
 <script>
 const SOURCE_MAPS={shopify_products:{required:["Title","Variant Price"],optional:["Variant SKU","Vendor","Type","Variant Barcode","Variant Compare At Price"],transform:r=>({Label_Title:r["Title"]||"",Label_Subtitle:r["Type"]||"",Label_SKU:r["Variant SKU"]||r["Variant Barcode"]||"",Label_Price:r["Variant Price"]?`$${parseFloat(r["Variant Price"]).toFixed(2)}`:"",Label_Vendor:r["Vendor"]||"",Label_Sale:r["Variant Compare At Price"]?`$${parseFloat(r["Variant Compare At Price"]).toFixed(2)}`:""})},shopify_orders:{required:["Name","Lineitem quantity"],optional:["Lineitem name","Lineitem variant","Lineitem sku","Billing Name"],transform:r=>({Label_Title:r["Lineitem name"]||r["Name"]||"",Label_Variant:r["Lineitem variant"]||"",Label_SKU:r["Lineitem sku"]||"",Label_Quantity:r["Lineitem quantity"]||"",Order_Number:r["Name"]||"",Customer:r["Billing Name"]||""})}};
