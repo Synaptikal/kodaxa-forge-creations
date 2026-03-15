@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickBooks → Shopify | LabelBridge</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    :root { --ink:#1a1612; --ink-2:#3d3530; --ink-3:#7a6f68; --paper:#faf7f2; --paper-2:#f0ebe2; --paper-3:#e4ddd1; --tape:#f5c842; --tape-dark:#c9991a; --rule:#d4cdc4; --mono:"Courier New",Courier,monospace; --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --radius:4px; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--ink); color:var(--paper); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,rgba(255,255,255,.03) 27px,rgba(255,255,255,.03) 28px); min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    nav { background:var(--ink); border-bottom:3px solid var(--tape); position:sticky; top:0; z-index:100; padding:0 1.5rem; }
+    .nav-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+    .nav-logo { font-family:var(--mono); font-size:1.05rem; font-weight:700; color:var(--paper); letter-spacing:.02em; }
+    .nav-logo span { color:var(--tape); }
+    .nav-back { font-family:var(--mono); font-size:.75rem; color:var(--ink-3); transition:color .15s; }
+    .nav-back:hover { color:var(--tape); }
+    .container { max-width:900px; margin:0 auto; padding:2rem 1.5rem; }
+    h1 { font-size:clamp(1.5rem,4vw,2rem); font-weight:800; letter-spacing:-.02em; margin-bottom:.5rem; }
+    .subtitle { color:var(--ink-3); font-size:.95rem; margin-bottom:2rem; max-width:500px; }
+    .step { margin-bottom:2rem; }
+    .step-label { font-family:var(--mono); font-size:.65rem; color:var(--tape); text-transform:uppercase; letter-spacing:.1em; margin-bottom:.5rem; }
+    h2 { font-size:1.1rem; font-weight:700; margin-bottom:1rem; }
+    #dropzone { border:2px dashed var(--ink-3); border-radius:var(--radius); padding:3rem 1rem; text-align:center; cursor:pointer; transition:border-color .2s,background .2s; }
+    #dropzone.dragover { border-color:var(--tape); background:rgba(245,200,66,.05); }
+    #dropzone input { display:none; }
+    #dropzone svg { stroke:var(--tape); margin-bottom:.75rem; }
+    #dropzone p { margin:.25rem 0 0; color:var(--ink-3); font-size:.9rem; }
+    #dropzone p strong { color:var(--paper); }
+    .banner { display:none; padding:.75rem 1rem; border-radius:var(--radius); margin-bottom:1rem; font-size:.9rem; }
+    #warning-banner { background:rgba(255,193,7,.15); border:1px solid rgba(255,193,7,.4); color:#ffc107; }
+    #success-banner { background:rgba(32,201,151,.15); border:1px solid rgba(32,201,151,.4); color:#20c997; }
+    .recipe-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin:1rem 0; }
+    .recipe-card { background:var(--ink-2); border:1px solid transparent; border-radius:var(--radius); padding:1rem; cursor:pointer; transition:border-color .2s,background .2s; }
+    .recipe-card:hover { border-color:var(--tape); }
+    .recipe-card.applied { border-color:#20c997; background:rgba(32,201,151,.1); }
+    .recipe-card h4 { font-size:.9rem; margin:0 0 .3rem; color:var(--paper); }
+    .recipe-card p { margin:0; font-size:.75rem; color:var(--ink-3); }
+    .recipe-card.applied p { color:#20c997; }
+    table { width:100%; font-size:.85rem; border-collapse:collapse; margin-top:1rem; }
+    th,td { padding:.5rem; text-align:left; border-bottom:1px solid var(--ink-2); }
+    th { color:var(--tape); font-family:var(--mono); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; }
+    .stat-row { display:flex; gap:1.5rem; flex-wrap:wrap; font-size:.85rem; color:var(--ink-3); margin:.5rem 0; }
+    .stat-row strong { color:var(--paper); }
+    .btn-tape { font-family:var(--mono); font-size:.85rem; font-weight:700; background:var(--tape); color:var(--ink); padding:.7rem 1.25rem; border:none; border-radius:var(--radius); cursor:pointer; transition:background .15s; }
+    .btn-tape:hover { background:var(--tape-dark); color:#fff; }
+    .btn-ghost { font-family:var(--mono); font-size:.85rem; background:transparent; color:var(--ink-3); border:1px solid var(--ink-3); padding:.7rem 1.25rem; border-radius:var(--radius); cursor:pointer; transition:border-color .15s,color .15s; }
+    .btn-ghost:hover { border-color:var(--tape); color:var(--tape); }
+    .hint { display:block; margin-top:.5rem; color:var(--ink-3); font-size:.8rem; }
+    kbd { background:var(--ink-2); padding:.1rem .35rem; border-radius:3px; font-family:var(--mono); font-size:.85em; }
+    footer { border-top:3px solid var(--tape); padding:2rem 1.5rem; text-align:center; font-size:.75rem; color:var(--ink-3); font-family:var(--mono); }
+    footer a { color:var(--tape); }
+    #recipes-section,#preview-section,#actions { display:none; }
+  </style>
+</head>
+<body>
+  <nav><div class="nav-inner"><a href="/labelbridge/" class="nav-logo">Label<span>Bridge</span></a><a href="/labelbridge/" class="nav-back">← All Tools</a></div></nav>
+  <div class="container">
+    <h1>QuickBooks → Shopify</h1>
+    <p class="subtitle">Fix QuickBooks Desktop CSV exports so Shopify's importer accepts them. Apply only the recipes you need.</p>
+
+    <div class="step">
+      <div class="step-label">Step 01</div>
+      <h2>Upload your QuickBooks CSV</h2>
+      <p class="hint">QuickBooks Desktop: Lists → Item List → Excel → Export all Items</p>
+      <div id="dropzone" role="button" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p><strong>Click to upload</strong> or drag and drop your .csv file</p>
+        <p>Your file never leaves this page</p>
+        <input type="file" id="file-input" accept=".csv" />
+      </div>
+    </div>
+
+    <div id="warning-banner" class="banner" role="alert"></div>
+    <div id="success-banner" class="banner" role="status"></div>
+
+    <div class="step" id="recipes-section">
+      <div class="step-label">Step 02</div>
+      <h2>Apply fix recipes</h2>
+      <p class="hint">Click any recipe to apply it. Applied recipes are shown in green.</p>
+      <div class="recipe-grid">
+        <div class="recipe-card" data-recipe="removeEmpty"><h4>🗑 Remove Empty Rows</h4><p>Deletes rows where all key columns are blank</p></div>
+        <div class="recipe-card" data-recipe="trimWhitespace"><h4>✂ Trim Whitespace</h4><p>Strips leading/trailing spaces from every cell</p></div>
+        <div class="recipe-card" data-recipe="fixDates"><h4>📅 Fix Date Format</h4><p>Converts to YYYY-MM-DD (ISO format)</p></div>
+        <div class="recipe-card" data-recipe="splitNames"><h4>👤 Split Full Names</h4><p>Splits "Full Name" into "First" and "Last"</p></div>
+        <div class="recipe-card" data-recipe="mapHeaders"><h4>🔁 Map QB → Shopify</h4><p>Renames Item Name→Title, Sales Price→Variant Price</p></div>
+        <div class="recipe-card" data-recipe="addHandles"><h4>🔗 Generate Handles</h4><p>Creates URL-friendly handles from Title</p></div>
+      </div>
+    </div>
+
+    <div class="step" id="preview-section">
+      <div class="step-label">Step 03</div>
+      <h2>Preview</h2>
+      <div class="stat-row"><span>Rows: <strong id="row-count">0</strong></span><span>Cols: <strong id="col-count">0</strong></span><span>Recipes: <strong id="applied-count">0</strong></span></div>
+      <div style="overflow-x:auto;"><table id="preview-table"></table></div>
+    </div>
+
+    <div class="step" id="actions">
+      <div class="step-label">Step 04</div>
+      <h2>Download fixed CSV</h2>
+      <button id="export-btn" class="btn-tape">⬇ Download Shopify-Ready CSV</button>
+      <button id="reset-btn" class="btn-ghost">Start Over</button>
+      <small class="hint">In Shopify: Products → Import → Upload CSV. Check <kbd>Map QB → Shopify</kbd> is applied.</small>
+    </div>
+  </div>
+
+  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
+
+<script>
+const QB_TO_SHOPIFY={"Item Name":"Title","Name":"Title","Sales Price":"Variant Price","Price":"Variant Price","Purchase Cost":"Variant Cost","Cost":"Variant Cost","On Hand":"Variant Inventory Qty","Quantity On Hand":"Variant Inventory Qty","Description":"Body (HTML)","Item Type":"Type","Type":"Type","SKU":"Variant SKU","Manufacturer Part Number":"Variant SKU","Preferred Vendor":"Vendor","Vendor":"Vendor"};
+const DATE_FIX=/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/;
+let originalData=[],currentData=[],originalHeaders=[],currentHeaders=[],appliedRecipes=new Set();
+const $=id=>document.getElementById(id);
+function showWarning(m){$("warning-banner").textContent="⚠ "+m;$("warning-banner").style.display="block";$("success-banner").style.display="none";}
+function showSuccess(m){$("success-banner").textContent="✓ "+m;$("success-banner").style.display="block";$("warning-banner").style.display="none";}
+const RECIPES={removeEmpty:(d,h)=>d.filter(r=>h.some(x=>(r[x]||"").trim()!=="")),trimWhitespace:(d,h)=>d.map(r=>{const o={};h.forEach(x=>{o[x]=(r[x]||"").trim();});return o;}),fixDates:(d,h)=>d.map(r=>{const o={...r};h.forEach(x=>{const v=(o[x]||"").trim(),m=v.match(DATE_FIX);if(m){let[,a,b,y]=m;y=y.length===2?(parseInt(y)>30?"19":"20")+y:y;o[x]=`${y}-${a.padStart(2,"0")}-${b.padStart(2,"0")}`;}});return o;}),splitNames:(d,h)=>{const n=h.find(x=>/full.?name|name/i.test(x)&&!h.includes("First Name"));if(!n)return d;return d.map(r=>{const p=(r[n]||"").trim().split(/\s+/);return{...r,"First Name":p[0]||"","Last Name":p.slice(1).join(" ")||""};});},mapHeaders:(d,h)=>d.map(r=>{const o={};h.forEach(x=>{const k=QB_TO_SHOPIFY[x]||x;o[k]=r[x];});return o;}),addHandles:(d,h)=>{const t=h.find(x=>/title|item.?name|name/i.test(x));if(!t)return d;return d.map(r=>({...r,Handle:(r[t]||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}));}};
+function recompute(){let d=originalData.map(r=>({...r})),h=[...originalHeaders];if(appliedRecipes.has("removeEmpty"))d=RECIPES.removeEmpty(d,h);if(appliedRecipes.has("trimWhitespace"))d=RECIPES.trimWhitespace(d,h);if(appliedRecipes.has("fixDates"))d=RECIPES.fixDates(d,h);if(appliedRecipes.has("splitNames")){d=RECIPES.splitNames(d,h);if(!h.includes("First Name"))h=[...h,"First Name","Last Name"];}if(appliedRecipes.has("mapHeaders")){d=RECIPES.mapHeaders(d,h);h=h.map(x=>QB_TO_SHOPIFY[x]||x);h=[...new Set(h)];}if(appliedRecipes.has("addHandles")){d=RECIPES.addHandles(d,h);if(!h.includes("Handle"))h=["Handle",...h];}currentData=d;currentHeaders=h;renderPreview();}
+function renderPreview(){const s=currentData.slice(0,5);$("preview-table").innerHTML=`<thead><tr>${currentHeaders.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${s.map(r=>`<tr>${currentHeaders.map(x=>`<td>${r[x]||""}</td>`).join("")}</tr>`).join("")}</tbody>`;$("row-count").textContent=currentData.length;$("col-count").textContent=currentHeaders.length;$("applied-count").textContent=appliedRecipes.size;}
+function processFile(file){if(!file||!file.name.endsWith(".csv")){showWarning("Please upload a .csv file.");return;}Papa.parse(file,{header:true,skipEmptyLines:true,quoteChar:'"',transformHeader:h=>h.trim(),complete:r=>{originalData=r.data;originalHeaders=r.meta.fields||[];currentData=[...originalData];currentHeaders=[...originalHeaders];appliedRecipes.clear();document.querySelectorAll(".recipe-card").forEach(c=>c.classList.remove("applied"));$("recipes-section").style.display="block";$("preview-section").style.display="block";$("actions").style.display="block";renderPreview();showSuccess(`Loaded ${originalData.length} rows, ${originalHeaders.length} columns from "${file.name}"`);},error:e=>showWarning("Parse error: "+e.message)});}
+document.querySelectorAll(".recipe-card").forEach(c=>{c.addEventListener("click",()=>{const k=c.dataset.recipe;if(appliedRecipes.has(k)){appliedRecipes.delete(k);c.classList.remove("applied");}else{appliedRecipes.add(k);c.classList.add("applied");}recompute();});});
+const dz=$("dropzone");dz.addEventListener("click",()=>$("file-input").click());dz.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" ")$("file-input").click();});$("file-input").addEventListener("change",e=>processFile(e.target.files[0]));dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("dragover");});dz.addEventListener("dragleave",()=>dz.classList.remove("dragover"));dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("dragover");processFile(e.dataTransfer.files[0]);});
+$("export-btn").addEventListener("click",()=>{if(!currentData.length)return;const csv=Papa.unparse({fields:currentHeaders,data:currentData}),blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}),a=Object.assign(document.createElement("a"),{href:URL.createObjectURL(blob),download:`shopify-import-fixed-${Date.now()}.csv`});a.click();URL.revokeObjectURL(a.href);});
+$("reset-btn").addEventListener("click",()=>{originalData=[];currentData=[];originalHeaders=[];currentHeaders=[];appliedRecipes.clear();$("file-input").value="";$("recipes-section").style.display="none";$("preview-section").style.display="none";$("actions").style.display="none";$("warning-banner").style.display="none";$("success-banner").style.display="none";$("preview-table").innerHTML="";document.querySelectorAll(".recipe-card").forEach(c=>c.classList.remove("applied"));});
+</script>
+</body>
+</html>

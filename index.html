@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kodaxa — Justin Davis</title>
+  <meta name="description" content="Solo developer. Sacramento, CA. Building games, tools, and editors from scratch." />
+  <style>
+    :root {
+      --bg:         #0a0b0d;
+      --panel:      #0f1115;
+      --panel-2:    #13161c;
+      --seam:       #1e2330;
+      --seam-2:     #252d3d;
+      --amber:      #d4820a;
+      --amber-2:    #e8a020;
+      --amber-dim:  #7a4a05;
+      --amber-glow: rgba(212,130,10,.18);
+      --amber-trace:rgba(212,130,10,.06);
+      --cyan:       #4a8fa8;
+      --cyan-dim:   #2a4f5e;
+      --text:       #b8c0cc;
+      --text-bright:#dde3ec;
+      --text-dim:   #4a5268;
+      --text-faint: #272e3f;
+      --green:      #3d9e5f;
+      --red:        #8f3535;
+      --mono: "Courier New", Courier, monospace;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Grain overlay — the "worn screen" feel */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 100;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      opacity: .6;
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: "";
+      position: fixed; inset: 0; z-index: 99;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,.06) 3px,
+        rgba(0,0,0,.06) 4px
+      );
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Corner bracket utility */
+    .bracketed { position: relative; }
+    .bracketed::before, .bracketed::after {
+      content: "";
+      position: absolute;
+      width: 10px; height: 10px;
+    }
+    .bracketed::before {
+      top: 0; left: 0;
+      border-top: 1px solid var(--amber-dim);
+      border-left: 1px solid var(--amber-dim);
+    }
+    .bracketed::after {
+      bottom: 0; right: 0;
+      border-bottom: 1px solid var(--amber-dim);
+      border-right: 1px solid var(--amber-dim);
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,11,13,.94);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--seam);
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1160px; margin: 0 auto;
+      height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-left { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-logo {
+      font-family: var(--mono); font-size: .8rem; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--amber-2);
+      text-shadow: 0 0 12px var(--amber-glow);
+    }
+    .nav-divider { width: 1px; height: 20px; background: var(--seam-2); }
+    .nav-system {
+      font-family: var(--mono); font-size: .62rem;
+      color: var(--text-dim); letter-spacing: .06em;
+    }
+    .nav-system .hi { color: var(--cyan); }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-alert {
+      font-family: var(--mono); font-size: .58rem;
+      color: var(--amber); letter-spacing: .1em;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .blink {
+      display: inline-block; width: 5px; height: 5px;
+      border-radius: 50%; background: var(--amber);
+      animation: blink .9s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .nav-pill {
+      font-family: var(--mono); font-size: .62rem;
+      padding: .28rem .7rem;
+      border: 1px solid var(--amber-dim);
+      color: var(--amber);
+      border-radius: 2px;
+      transition: all .15s;
+    }
+    .nav-pill:hover { background: var(--amber-glow); }
+
+    /* ── TRANSMISSION HEADER ─────────────────────────────────────────────── */
+    .transmission {
+      max-width: 1160px; margin: 0 auto;
+      padding: .7rem 2rem;
+      border-bottom: 1px solid var(--text-faint);
+      display: flex; align-items: center; gap: 1.5rem;
+      font-family: var(--mono); font-size: .6rem; color: var(--text-faint);
+      letter-spacing: .08em;
+    }
+    .transmission .tx-label {
+      color: var(--amber-dim); letter-spacing: .14em; text-transform: uppercase;
+    }
+    .transmission .sep { color: var(--text-faint); }
+
+    /* ── HERO ────────────────────────────────────────────────────────────── */
+    .hero {
+      max-width: 1160px; margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .hero-tag {
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--amber-dim); letter-spacing: .14em; text-transform: uppercase;
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 2rem;
+    }
+    .hero-tag::before { content:""; display:block; width:24px; height:1px; background:var(--amber-dim); }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 6vw, 4.6rem);
+      font-weight: 900; letter-spacing: -.03em;
+      line-height: 1.0; margin-bottom: 2rem;
+      color: var(--text-bright);
+    }
+    .hero h1 .call { 
+      display: block;
+      font-family: var(--mono); font-size: .22em;
+      color: var(--amber); font-weight: 400;
+      letter-spacing: .22em; text-transform: uppercase;
+      margin-bottom: .6rem;
+      text-shadow: 0 0 18px var(--amber-glow);
+    }
+    .hero h1 .muted { color: var(--text-dim); }
+
+    .hero-body {
+      max-width: 480px; margin-bottom: 2.5rem;
+    }
+    .hero-body p {
+      font-size: .92rem; color: var(--text);
+      line-height: 1.85; margin-bottom: .85rem;
+    }
+    .hero-body p:last-child { margin-bottom: 0; }
+    .hero-body strong { color: var(--text-bright); font-weight: 600; }
+    .hero-body em { font-style: normal; color: var(--amber-2); }
+
+    .hero-actions { display: flex; gap: .65rem; flex-wrap: wrap; }
+    .btn-primary {
+      font-family: var(--mono); font-size: .75rem; font-weight: 700;
+      background: var(--amber); color: #080810;
+      padding: .55rem 1.2rem; border-radius: 2px;
+      letter-spacing: .06em; text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: background .15s, box-shadow .15s;
+      box-shadow: 0 0 16px rgba(212,130,10,.3);
+    }
+    .btn-primary:hover {
+      background: var(--amber-2);
+      box-shadow: 0 0 24px rgba(232,160,32,.5);
+    }
+    .btn-line {
+      font-family: var(--mono); font-size: .72rem;
+      background: transparent; color: var(--text-dim);
+      padding: .55rem 1.2rem; border-radius: 2px;
+      border: 1px solid var(--seam-2);
+      transition: all .15s;
+    }
+    .btn-line:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+    /* ── MANIFEST CARD ───────────────────────────────────────────────────── */
+    .manifest {
+      border: 1px solid var(--seam-2);
+      background: var(--panel);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: .5rem;
+      position: relative;
+    }
+    .manifest::before {
+      content: ""; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--amber), transparent 70%);
+    }
+    .manifest-header {
+      padding: .7rem 1rem;
+      background: rgba(212,130,10,.06);
+      border-bottom: 1px solid var(--seam);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .manifest-header span {
+      font-family: var(--mono); font-size: .58rem;
+      color: var(--amber); letter-spacing: .14em; text-transform: uppercase;
+    }
+    .manifest-header .ver {
+      color: var(--text-dim); font-size: .55rem;
+    }
+    .mrow {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .6rem 1rem;
+      border-bottom: 1px solid var(--text-faint);
+      font-family: var(--mono); font-size: .72rem;
+    }
+    .mrow:last-child { border-bottom: none; }
+    .mk { color: var(--text-dim); }
+    .mv { color: var(--text-bright); }
+    .mv.amber { color: var(--amber-2); text-shadow: 0 0 8px var(--amber-glow); }
+    .mv.cyan  { color: var(--cyan); }
+    .mv.green { color: var(--green); }
+    .mv.warm  { color: #fb923c; }
+    .manifest-footer {
+      padding: .6rem 1rem;
+      border-top: 1px solid var(--text-faint);
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--text-dim);
+      display: flex; align-items: center; gap: .5rem;
+      background: var(--panel-2);
+    }
+    .manifest-footer .blink { background: var(--green); box-shadow: 0 0 5px var(--green); }
+
+    /* ── PANEL SECTIONS ──────────────────────────────────────────────────── */
+    .section {
+      max-width: 1160px; margin: 0 auto;
+      padding: 3.5rem 2rem;
+      border-top: 1px solid var(--text-faint);
+    }
+
+    .sec-head {
+      font-family: var(--mono); font-size: .58rem;
+      color: var(--text-dim); letter-spacing: .18em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .sec-head .sec-num { color: var(--amber-dim); }
+    .sec-head::after { content:""; flex:1; height:1px; background:var(--text-faint); }
+
+    /* ── DOSSIER GRID ────────────────────────────────────────────────────── */
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1px;
+      background: var(--seam);
+      border: 1px solid var(--seam);
+    }
+
+    .dossier {
+      background: var(--panel);
+      padding: 1.5rem;
+      display: flex; flex-direction: column; gap: .8rem;
+      position: relative;
+      transition: background .2s;
+    }
+    .dossier:hover { background: var(--panel-2); }
+    .dossier:hover .dossier-glow { opacity: 1; }
+
+    .dossier-glow {
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, var(--amber), transparent 60%);
+      opacity: 0; transition: opacity .25s;
+    }
+
+    .dossier-meta {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .dossier-class {
+      font-family: var(--mono); font-size: .56rem;
+      color: var(--text-dim); letter-spacing: .12em; text-transform: uppercase;
+    }
+    .d-status {
+      font-family: var(--mono); font-size: .56rem; font-weight: 700;
+      padding: .15rem .45rem;
+      letter-spacing: .08em; text-transform: uppercase;
+      border-radius: 1px;
+    }
+    .s-live    { background:rgba(61,158,95,.12);  color:#3d9e5f; border:1px solid rgba(61,158,95,.25); }
+    .s-wip     { background:rgba(212,130,10,.1);  color:var(--amber); border:1px solid rgba(212,130,10,.25); }
+    .s-active  { background:rgba(74,143,168,.1);  color:var(--cyan);  border:1px solid rgba(74,143,168,.25); }
+
+    .dossier-id {
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--text-faint); letter-spacing: .06em;
+    }
+    .dossier h3 { font-size: 1rem; font-weight: 800; color: var(--text-bright); letter-spacing: -.01em; }
+    .dossier p  { font-size: .83rem; color: var(--text); line-height: 1.7; flex: 1; }
+    .dossier p.redacted {
+      position: relative; color: var(--text-faint);
+      user-select: none;
+    }
+
+    .d-tags { display: flex; gap: .3rem; flex-wrap: wrap; }
+    .d-tag {
+      font-family: var(--mono); font-size: .58rem;
+      padding: .1rem .38rem; border-radius: 1px;
+      background: var(--panel-2); color: var(--text-dim);
+      border: 1px solid var(--seam);
+    }
+
+    .d-link {
+      font-family: var(--mono); font-size: .68rem; font-weight: 700;
+      color: var(--amber); display: inline-flex; align-items: center; gap: .3rem;
+      transition: gap .15s, text-shadow .15s;
+    }
+    .d-link:hover { gap: .55rem; text-shadow: 0 0 10px var(--amber-glow); }
+    .d-link.cold  { color: var(--text-dim); }
+    .d-link.cold:hover { color: var(--text); text-shadow: none; }
+
+    /* ── LOG ─────────────────────────────────────────────────────────────── */
+    .log-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start;
+    }
+    .log-grid h2 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 900; letter-spacing: -.03em; line-height: 1.15;
+      color: var(--text-bright); margin-bottom: 1.5rem;
+    }
+    .log-grid h2 .amber { color: var(--amber-2); }
+    .log-copy p {
+      font-size: .9rem; color: var(--text); line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .log-copy strong { color: var(--text-bright); }
+    .log-copy em     { font-style: normal; color: var(--amber-2); }
+
+    /* Actual log entries */
+    .log-feed { border: 1px solid var(--seam); }
+    .log-feed-header {
+      padding: .55rem 1rem;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--seam);
+      font-family: var(--mono); font-size: .58rem;
+      color: var(--text-dim); letter-spacing: .12em;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .log-feed-header .live-tag {
+      color: var(--green); display: flex; align-items: center; gap: .4rem;
+    }
+    .log-entry {
+      padding: 1rem;
+      border-bottom: 1px solid var(--text-faint);
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: 1rem;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-ts {
+      font-family: var(--mono); font-size: .58rem;
+      color: var(--amber-dim); line-height: 1.5;
+      padding-top: .15rem;
+    }
+    .log-entry h4 { font-size: .85rem; font-weight: 700; color: var(--text-bright); margin-bottom: .25rem; }
+    .log-entry p  { font-size: .78rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* ── HAIL ────────────────────────────────────────────────────────────── */
+    .hail {
+      max-width: 1160px; margin: 0 auto;
+      padding: 3.5rem 2rem;
+      border-top: 1px solid var(--text-faint);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    .hail-copy h2 {
+      font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+      font-weight: 900; letter-spacing: -.02em;
+      color: var(--text-bright); margin-bottom: .4rem;
+    }
+    .hail-copy h2 .amber { color: var(--amber-2); }
+    .hail-copy p { font-size: .85rem; color: var(--text-dim); }
+    .hail-actions { display: flex; gap: .65rem; flex-wrap: wrap; }
+
+    /* ── FOOTER ──────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--text-faint);
+      padding: 1.25rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: .75rem;
+    }
+    .footer-inner span, .footer-inner a {
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--text-faint); letter-spacing: .04em;
+    }
+    .footer-inner a:hover { color: var(--amber); }
+    .footer-links { display: flex; gap: 1.25rem; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+    @media (max-width: 800px) {
+      .hero       { grid-template-columns: 1fr; }
+      .manifest   { display: none; }
+      .log-grid   { grid-template-columns: 1fr; gap: 2rem; }
+      .transmission { display: none; }
+      nav         { padding: 0 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-logo">KODAXA</div>
+        <div class="nav-divider"></div>
+        <div class="nav-system">
+          SECTOR <span class="hi">38N·121W</span> · SACRAMENTO
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-alert">
+          <span class="blink"></span>
+          1 ACTIVE DEPLOYMENT
+        </div>
+        <a class="nav-pill" href="/labelbridge/">LABELBRIDGE ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TRANSMISSION BAR -->
+  <div class="transmission">
+    <span class="tx-label">INCOMING</span>
+    <span class="sep">//</span>
+    <span>IDENT: JUSTIN DAVIS · SOLO OPERATOR · KODAXA STATION</span>
+    <span class="sep">//</span>
+    <span>STATUS: ACTIVELY BUILDING · 4 OPERATIONS IN PROGRESS</span>
+    <span class="sep">//</span>
+    <span>LAST DEPLOYMENT: LABELBRIDGE · MAR 15 2026</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <div class="hero-tag">Personal Dispatch · Kodaxa.dev</div>
+      <h1>
+        <span class="call">// Justin Davis</span>
+        One person.<br>
+        <span class="muted">No crew.</span><br>
+        All of it.
+      </h1>
+      <div class="hero-body">
+        <p>
+          I build the things that don't exist yet —
+          <em>the game I've always wanted to play, the editor that doesn't treat AI as an afterthought,
+          the tool that fixes the thing that should've never been broken.</em>
+        </p>
+        <p>
+          <strong>No studio. No investors. No roadmap decks.</strong>
+          Just a workstation in Sacramento and an unreasonable amount of unfinished business.
+        </p>
+        <p>
+          Stellar Forge is the long mission. LabelBridge shipped this morning.
+          <strong>This is what solo looks like.</strong>
+        </p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn-primary" href="/labelbridge/">LabelBridge — Live Now ↗</a>
+        <a class="btn-line" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn-line" href="mailto:hello@kodaxa.dev">Hail Me</a>
+      </div>
+    </div>
+
+    <!-- MANIFEST CARD -->
+    <div class="manifest bracketed">
+      <div class="manifest-header">
+        <span>Operator Manifest</span>
+        <span class="ver">REV 1.0 · ACTIVE</span>
+      </div>
+      <div class="mrow"><span class="mk">ident</span>          <span class="mv amber">Justin Davis</span></div>
+      <div class="mrow"><span class="mk">callsign</span>       <span class="mv amber">KODAXA</span></div>
+      <div class="mrow"><span class="mk">crew</span>           <span class="mv amber">1 · Solo</span></div>
+      <div class="mrow"><span class="mk">base</span>           <span class="mv">Sacramento · CA</span></div>
+      <div class="mrow"><span class="mk">shipped</span>        <span class="mv green">LabelBridge ✓</span></div>
+      <div class="mrow"><span class="mk">nearly_done</span>    <span class="mv warm">ForgeWarden</span></div>
+      <div class="mrow"><span class="mk">long_mission</span>   <span class="mv cyan">Stellar Forge</span></div>
+      <div class="mrow"><span class="mk">side_op</span>        <span class="mv cyan">PrismIDE</span></div>
+      <div class="mrow"><span class="mk">funding</span>        <span class="mv">Self · ☕</span></div>
+      <div class="manifest-footer">
+        <span class="blink"></span>
+        Building the game I always wanted to play
+      </div>
+    </div>
+  </div>
+
+  <!-- DOSSIERS -->
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">§01</span> Active Operations</div>
+    <div class="dossier-grid">
+
+      <div class="dossier">
+        <div class="dossier-glow"></div>
+        <div class="dossier-meta">
+          <div>
+            <div class="dossier-class">Utility Suite</div>
+            <div class="dossier-id">OPS·001 · LABELBRIDGE</div>
+          </div>
+          <span class="d-status s-live">Live</span>
+        </div>
+        <h3>LabelBridge</h3>
+        <p>Five browser-based CSV formatters fixing the mismatch between POS systems and label printers. Built in one session. Ships with no backend, no account, no nonsense.</p>
+        <div class="d-tags">
+          <span class="d-tag">Vanilla JS</span>
+          <span class="d-tag">PapaParse</span>
+          <span class="d-tag">Zero backend</span>
+        </div>
+        <a class="d-link" href="/labelbridge/">Access tool →</a>
+      </div>
+
+      <div class="dossier">
+        <div class="dossier-glow"></div>
+        <div class="dossier-meta">
+          <div>
+            <div class="dossier-class">Unity Editor Extension</div>
+            <div class="dossier-id">OPS·002 · FORGEWARDEN</div>
+          </div>
+          <span class="d-status s-wip">Final Pass</span>
+        </div>
+        <h3>ForgeWarden</h3>
+        <p>Scene validation, asset dependency tracking, and build configuration tooling for Unity 6. Built because Unity's native tooling kept failing at scale.</p>
+        <div class="d-tags">
+          <span class="d-tag">Unity 6</span>
+          <span class="d-tag">C#</span>
+          <span class="d-tag">Editor</span>
+        </div>
+        <a class="d-link cold" href="#">Releasing soon</a>
+      </div>
+
+      <div class="dossier">
+        <div class="dossier-glow"></div>
+        <div class="dossier-meta">
+          <div>
+            <div class="dossier-class">3D Open-World MMORPG</div>
+            <div class="dossier-id">OPS·003 · STELLAR FORGE</div>
+          </div>
+          <span class="d-status s-active">In Dev</span>
+        </div>
+        <h3>Stellar Forge</h3>
+        <p>The game I've always wanted to play — a persistent open world built in Unity 6. Player-driven economy, faction warfare, emergent politics. 80+ design documents before a scene was opened.</p>
+        <div class="d-tags">
+          <span class="d-tag">Unity 6</span>
+          <span class="d-tag">C#</span>
+          <span class="d-tag">MMORPG</span>
+          <span class="d-tag">Long game</span>
+        </div>
+        <a class="d-link cold" href="#">Updates eventually</a>
+      </div>
+
+      <div class="dossier">
+        <div class="dossier-glow"></div>
+        <div class="dossier-meta">
+          <div>
+            <div class="dossier-class">AI-Native IDE</div>
+            <div class="dossier-id">OPS·004 · PRISM IDE</div>
+          </div>
+          <span class="d-status s-active">In Dev</span>
+        </div>
+        <h3>PrismIDE</h3>
+        <p>A code editor built from scratch for AI-assisted development. Not a plugin. Not VS Code with a chatbot. A ground-up rethink where AI is the first-class citizen.</p>
+        <div class="d-tags">
+          <span class="d-tag">TypeScript</span>
+          <span class="d-tag">Rust</span>
+          <span class="d-tag">AI-Native</span>
+        </div>
+        <a class="d-link cold" href="#">Not yet</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section class="section">
+    <div class="sec-head"><span class="sec-num">§02</span> Field Notes</div>
+    <div class="log-grid">
+      <div class="log-copy">
+        <h2>I build what<br>I <span class="amber">can't find.</span></h2>
+        <p>
+          Stellar Forge exists because no MMO has ever felt like the ones I spent years
+          imagining. <strong>Star Wars Galaxies</strong> had the soul but lost it.
+          <strong>EVE Online</strong> had the scale but not the ground.
+          I stopped waiting.
+        </p>
+        <p>
+          PrismIDE exists because I spend every day working <em>with</em> AI and every existing
+          editor treats it like a guest. That's the wrong architecture.
+        </p>
+        <p>
+          LabelBridge exists because I had a free Sunday and a specific frustration.
+          <strong>Find the pain. Build the fix. Ship it.</strong>
+        </p>
+      </div>
+
+      <div class="log-feed">
+        <div class="log-feed-header">
+          <span>// OPERATOR LOG · KODAXA STATION</span>
+          <span class="live-tag"><span class="blink" style="background:var(--green);box-shadow:0 0 5px var(--green)"></span>LIVE</span>
+        </div>
+        <div class="log-entry">
+          <div class="log-ts">2026<br>MAR 15</div>
+          <div>
+            <h4>LabelBridge deployed</h4>
+            <p>Five tools, one afternoon. Square, Clover, QuickBooks, Shopify. All browser-side. No backend. Went live this morning.</p>
+          </div>
+        </div>
+        <div class="log-entry">
+          <div class="log-ts">ONGOING</div>
+          <div>
+            <h4>ForgeWarden — final pass</h4>
+            <p>Unity 6 editor utility approaching release. Validation pass and documentation underway.</p>
+          </div>
+        </div>
+        <div class="log-entry">
+          <div class="log-ts">ONGOING</div>
+          <div>
+            <h4>Stellar Forge — design locked</h4>
+            <p>World systems, economy design, and faction mechanics locked. Beginning build phase.</p>
+          </div>
+        </div>
+        <div class="log-entry">
+          <div class="log-ts">ONGOING</div>
+          <div>
+            <h4>PrismIDE — architecture</h4>
+            <p>Core editor architecture in design. Rust backend, TypeScript surface. AI layer built in, not bolted on.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAIL -->
+  <div class="hail">
+    <div class="hail-copy">
+      <h2>Got something worth <span class="amber">building?</span></h2>
+      <p>Freelance, collaboration, or a solid idea — I read every message. Response time varies by coffee level.</p>
+    </div>
+    <div class="hail-actions">
+      <a class="btn-primary" href="mailto:hello@kodaxa.dev">hello@kodaxa.dev</a>
+      <a class="btn-line" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <span>KODAXA · Justin Davis · Sacramento CA · 2026</span>
+      <div class="footer-links">
+        <a href="/labelbridge/">LabelBridge</a>
+        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:hello@kodaxa.dev">hello@kodaxa.dev</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+Item Name,Variation Name,SKU,Description,Price,Category
+"Coffee Mug - Ceramic, 12oz",Matte Black,MUG-12-BLK,"Premium ceramic mug with matte finish. Dishwasher safe. Handle with care - fragile item.",24.00,Drinkware
+"T-Shirt (Unisex) - 100% Cotton",Large/XL,TS-U-L-001,"Soft cotton tee. Size runs small - order up if between sizes. Made in USA & Canada.",29.99,Apparel
+Wireless Bluetooth Speaker,,SPKR-BT-001,"Portable speaker with 12-hour battery. Water-resistant (IPX4). Don't submerge!",,Electronics
+"Gift Card - $50 Value",,GC-50-001,Plastic gift card. No expiration. Non-refundable.,50.00,Gift Cards
+"Chair - Ergonomic Office (Mesh Back)",Black/Chrome,CH-ERG-BLK,"Adjustable height 18-24". Lumbar support. Assembly required - tools included.",189.00,Furniture
+"Item with ""quotes"" in name",Variant,SKU-001,Description with 'apostrophes' and "quotes",15.50,Test
+,Empty Name Item,SKU-002,This row has no item name,9.99,Test
+"Multi
+Line
+Item",Normal,SKU-003,Description with line breaks,12.00,Test
+"Emoji Test 🎉",Red,SKU-004,Item with emoji in name 🔥 and description,25.00,Test
+"Very Long Name That Goes On And On And Might Break Some Systems If Not Handled Properly By The Parser",Standard,SKU-005,Short desc,5.00,Test
+"Negative Price Test",,SKU-006,This has a negative price,-10.00,Test
+"Zero Price",Free,SKU-007,Free item,0.00,Test
+"Price with spaces",,SKU-008,Price might have spaces, 45.50 ,Test

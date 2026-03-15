@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text-to-Table | LabelBridge</title>
+  <style>
+    :root { --ink:#1a1612; --ink-2:#3d3530; --ink-3:#7a6f68; --paper:#faf7f2; --paper-2:#f0ebe2; --paper-3:#e4ddd1; --tape:#f5c842; --tape-dark:#c9991a; --rule:#d4cdc4; --mono:"Courier New",Courier,monospace; --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --radius:4px; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--ink); color:var(--paper); font-family:var(--sans); line-height:1.6; -webkit-font-smoothing:antialiased; background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,rgba(255,255,255,.03) 27px,rgba(255,255,255,.03) 28px); min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    nav { background:var(--ink); border-bottom:3px solid var(--tape); position:sticky; top:0; z-index:100; padding:0 1.5rem; }
+    .nav-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+    .nav-logo { font-family:var(--mono); font-size:1.05rem; font-weight:700; color:var(--paper); letter-spacing:.02em; }
+    .nav-logo span { color:var(--tape); }
+    .nav-back { font-family:var(--mono); font-size:.75rem; color:var(--ink-3); transition:color .15s; }
+    .nav-back:hover { color:var(--tape); }
+    .container { max-width:900px; margin:0 auto; padding:2rem 1.5rem; }
+    h1 { font-size:clamp(1.5rem,4vw,2rem); font-weight:800; letter-spacing:-.02em; margin-bottom:.5rem; }
+    .subtitle { color:var(--ink-3); font-size:.95rem; margin-bottom:2rem; max-width:500px; }
+    .step { margin-bottom:2rem; }
+    .step-label { font-family:var(--mono); font-size:.65rem; color:var(--tape); text-transform:uppercase; letter-spacing:.1em; margin-bottom:.5rem; }
+    h2 { font-size:1.1rem; font-weight:700; margin-bottom:1rem; }
+    .example-text { background:var(--ink-2); border:1px dashed var(--ink-3); border-radius:var(--radius); padding:1rem; font-family:var(--mono); font-size:.82rem; white-space:pre-wrap; cursor:pointer; color:var(--ink-3); transition:border-color .15s; }
+    .example-text:hover { border-color:var(--tape); }
+    textarea { width:100%; min-height:200px; background:var(--ink-2); border:1px solid var(--ink-3); border-radius:var(--radius); padding:1rem; color:var(--paper); font-family:var(--mono); font-size:.9rem; resize:vertical; }
+    textarea:focus { outline:none; border-color:var(--tape); }
+    .btn-row { display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1rem; }
+    .btn-tape { font-family:var(--mono); font-size:.85rem; font-weight:700; background:var(--tape); color:var(--ink); padding:.7rem 1.25rem; border:none; border-radius:var(--radius); cursor:pointer; transition:background .15s; }
+    .btn-tape:hover { background:var(--tape-dark); color:#fff; }
+    .btn-ghost { font-family:var(--mono); font-size:.85rem; background:transparent; color:var(--ink-3); border:1px solid var(--ink-3); padding:.7rem 1.25rem; border-radius:var(--radius); cursor:pointer; transition:border-color .15s,color .15s; }
+    .btn-ghost:hover { border-color:var(--tape); color:var(--tape); }
+    .banner { display:none; padding:.75rem 1rem; border-radius:var(--radius); margin-bottom:1rem; font-size:.9rem; }
+    #warning-banner { background:rgba(255,193,7,.15); border:1px solid rgba(255,193,7,.4); color:#ffc107; }
+    #success-banner { background:rgba(32,201,151,.15); border:1px solid rgba(32,201,151,.4); color:#20c997; }
+    table { width:100%; font-size:.85rem; border-collapse:collapse; margin-top:1rem; }
+    th,td { padding:.5rem; text-align:left; border-bottom:1px solid var(--ink-2); }
+    th { color:var(--tape); font-family:var(--mono); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; }
+    td[contenteditable="true"] { background:var(--ink-2); outline:none; }
+    td[contenteditable="true"]:focus { background:rgba(245,200,66,.1); }
+    .hint { display:block; margin-top:.5rem; color:var(--ink-3); font-size:.8rem; }
+    footer { border-top:3px solid var(--tape); padding:2rem 1.5rem; text-align:center; font-size:.75rem; color:var(--ink-3); font-family:var(--mono); }
+    footer a { color:var(--tape); }
+    #results-section { display:none; }
+  </style>
+</head>
+<body>
+  <nav><div class="nav-inner"><a href="/labelbridge/" class="nav-logo">Label<span>Bridge</span></a><a href="/labelbridge/" class="nav-back">← All Tools</a></div></nav>
+  <div class="container">
+    <h1>Text-to-Table</h1>
+    <p class="subtitle">Paste messy contractor texts or WhatsApp notes. Auto-extracts dates, dollar amounts, and line items into an editable table.</p>
+
+    <div class="step">
+      <div class="step-label">Step 01</div>
+      <h2>Paste your notes</h2>
+      <small class="hint">Click the example below to load a sample, or paste your own text.</small>
+      <div class="example-text" id="example-block">3/14 — Labor: 4 hrs @ $45/hr = $180
+Materials: PVC pipe x3 $22.50, end caps $8.00
+Travel: $15
+3/15 — Labor 6hrs $270
+Concrete mix x2 bags $34
+Disposal fee $50</div>
+      <br />
+      <textarea id="input-text" placeholder="Paste contractor texts, WhatsApp messages, or handwritten notes here..."></textarea>
+      <div class="btn-row">
+        <button id="parse-btn" class="btn-tape">Parse Notes →</button>
+        <button id="clear-btn" class="btn-ghost">Clear</button>
+      </div>
+    </div>
+
+    <div id="warning-banner" class="banner" role="alert"></div>
+    <div id="success-banner" class="banner" role="status"></div>
+
+    <div class="step" id="results-section">
+      <div class="step-label">Step 02</div>
+      <h2>Edit & confirm your table</h2>
+      <small class="hint">All cells are editable. Fix anything the parser got wrong before copying.</small>
+      <div style="overflow-x:auto;">
+        <table id="result-table">
+          <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th></tr></thead>
+          <tbody id="result-body"></tbody>
+        </table>
+      </div>
+      <small class="hint">Total: <strong id="total-display">$0.00</strong> | <span id="row-count">0</span> line items</small>
+      <div class="btn-row" style="margin-top:1.25rem;">
+        <button id="copy-excel-btn" class="btn-tape">📋 Copy for Excel / Google Sheets</button>
+        <button id="add-row-btn" class="btn-ghost">+ Add Row</button>
+        <button id="reset-btn" class="btn-ghost">Start Over</button>
+      </div>
+      <small class="hint">After copying, open Excel or Google Sheets and press Ctrl+V (or ⌘+V).</small>
+    </div>
+  </div>
+
+  <footer><p>LabelBridge · All processing in your browser · No data stored · <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></p></footer>
+
+<script>
+const DATE_RE=/\b(\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{2,4})?)\b/,AMOUNT_RE=/\$\s*([\d,]+(?:\.\d{1,2})?)/g,CATEGORY_KW=["labor","materials","material","parts","travel","disposal","dump","equipment","permit","inspection","supplies","rental","delivery","misc"];
+let rows=[];
+const $=id=>document.getElementById(id);
+function showWarning(m){$("warning-banner").textContent="⚠ "+m;$("warning-banner").style.display="block";$("success-banner").style.display="none";}
+function showSuccess(m){$("success-banner").textContent="✓ "+m;$("success-banner").style.display="block";$("warning-banner").style.display="none";}
+function detectCategory(l){const x=l.toLowerCase();return CATEGORY_KW.find(k=>x.includes(k))||"Other";}
+function extractAmounts(l){const f=[];let m;AMOUNT_RE.lastIndex=0;while((m=AMOUNT_RE.exec(l))!==null)f.push(parseFloat(m[1].replace(/,/g,"")));return f;}
+function parseText(t){const lines=t.split(/\n/).map(l=>l.trim()).filter(l=>l.length>2),results=[];let currentDate="";lines.forEach(line=>{const dm=line.match(DATE_RE);if(dm)currentDate=dm[1];const segments=line.split(/,|;/).map(s=>s.trim()).filter(s=>s.length>1);segments.forEach(seg=>{let amounts=extractAmounts(seg);if(!amounts.length){const hm=seg.match(/(\d+(?:\.\d+)?)\s*hrs?\s*@\s*\$?([\d,.]+)/i);if(hm){const total=parseFloat(hm[1])*parseFloat(hm[2].replace(/,/g,""));amounts.push(total);}}if(!amounts.length)return;const total=amounts.reduce((a,b)=>a+b,0),cat=detectCategory(seg),desc=seg.replace(DATE_RE,"").replace(/^[\s\-—:]+/,"").replace(/\$[\d,\.]+/g,"").replace(/\s+/g," ").trim();results.push({date:currentDate,category:cat.charAt(0).toUpperCase()+cat.slice(1),description:desc,amount:total});});});return results;}
+function renderTable(data){$("result-body").innerHTML=data.map((r,i)=>`<tr data-i="${i}"><td contenteditable="true">${r.date}</td><td contenteditable="true">${r.category}</td><td contenteditable="true">${r.description}</td><td contenteditable="true">$${r.amount.toFixed(2)}</td></tr>`).join("");updateTotal();$("row-count").textContent=data.length;}
+function updateTotal(){let total=0;$("result-body").querySelectorAll("tr td:last-child").forEach(c=>{const v=parseFloat(c.textContent.replace(/[^0-9.]/g,""));if(!isNaN(v))total+=v;});$("total-display").textContent="$"+total.toFixed(2);}
+function getTableData(){return[...$("result-body").querySelectorAll("tr")].map(tr=>{const cells=tr.querySelectorAll("td");return[cells[0].textContent,cells[1].textContent,cells[2].textContent,cells[3].textContent];});}
+$("parse-btn").addEventListener("click",()=>{const raw=$("input-text").value.trim();if(!raw){showWarning("Please paste some text first.");return;}rows=parseText(raw);if(!rows.length){showWarning("No dollar amounts found. Make sure prices are formatted like $45 or $22.50.");return;}renderTable(rows);$("results-section").style.display="block";showSuccess(`Found ${rows.length} line items totalling ${$("total-display").textContent}`);});
+$("copy-excel-btn").addEventListener("click",()=>{const header=["Date","Category","Description","Amount"].join("\t"),body=getTableData().map(r=>r.join("\t")).join("\n");navigator.clipboard.writeText(header+"\n"+body).then(()=>showSuccess("Copied! Open Excel or Google Sheets and press Ctrl+V.")).catch(()=>showWarning("Copy failed — try selecting the table manually."));});
+$("add-row-btn").addEventListener("click",()=>{$("result-body").insertAdjacentHTML("beforeend",`<tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true">$0.00</td></tr>`);$("row-count").textContent=$("result-body").querySelectorAll("tr").length;});
+$("result-body").addEventListener("input",updateTotal);
+$("clear-btn").addEventListener("click",()=>{$("input-text").value="";});
+$("reset-btn").addEventListener("click",()=>{$("input-text").value="";rows=[];$("result-body").innerHTML="";$("results-section").style.display="none";$("warning-banner").style.display="none";$("success-banner").style.display="none";});
+$("example-block").addEventListener("click",()=>{$("input-text").value=$("example-block").textContent;$("input-text").focus();});
+</script>
+</body>
+</html>

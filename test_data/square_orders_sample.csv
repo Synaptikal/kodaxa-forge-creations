@@ -1,0 +1,9 @@
+Order ID,Date & Time,Product Name,Product Options,Product Quantity,Customer Name,Order Status
+#12345,2025-03-10 09:15:00,Organic Coffee Beans,Size: 12oz Bag,2,Janet Smith,Completed
+#12345,2025-03-10 09:15:00,Artisan Sourdough,Slice: Yes,1,Janet Smith,Completed
+#12346,2025-03-10 10:30:00,Vanilla Bean Candle,Size: 8oz; Scent: Extra Strong,1,Mike Johnson,Completed
+#12346,2025-03-10 10:30:00,Ceramic Mug,Color: White; Gift Wrap: Yes,2,Mike Johnson,Completed
+#12347,2025-03-10 11:45:00,Tote Bag,Monogram: J.S.,3,Sarah Williams,Completed
+#12348,2025-03-10 14:00:00,Gift Card,Type: Physical,1,Robert Brown,Completed
+#12349,2025-03-10 15:20:00,Organic Coffee Beans,Size: 5lb Bag,1,Lisa Davis,Completed
+#12349,2025-03-10 15:20:00,Artisan Sourdough,Slice: No,2,Lisa Davis,Completed

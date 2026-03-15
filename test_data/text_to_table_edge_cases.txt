@@ -1,0 +1,472 @@
+=== JOB 1: AC Repair - Johnson Residence ===
+Date: 3/10/2026
+Tech: Mike R.
+
+Diagnosed refrigerant leak - 2 hrs @ $85/hr = $170
+R-410A refrigerant 3 lbs @ $45/lb = $135
+Leak sealant + dye kit = $28.50
+Service call fee = $65
+
+Total: $398.50
+
+=== JOB 2: Electrical Panel Upgrade - Smith Commercial ===
+Date: 3/12/2026
+Tech: Dave & Lisa (2 person crew)
+
+Labor: 16 hrs total (8 hrs each) @ $95/hr = $1,520
+200A main panel (Siemens) = $485
+Breakers (mix of 20A, 30A, 50A) x8 = $240
+Conduit and wire (approx 75ft) = $180
+Permit and inspection fees = $225
+
+Subtotal: $2,850
+Discount (10% commercial): -$285
+
+Total: $2,565
+
+=== JOB 3: Emergency Call - Flooded Basement Pump ===
+Date: 3/14/2026 11:45 PM
+Tech: Mike R. (after hours)
+
+Emergency callout (after hours) = $250
+Sump pump replacement (1/2 HP) = $385
+Check valve and fittings = $45
+Discharge line extension (20ft) = $38
+Cleanup and dehumidifier rental (2 days) = $85
+
+Total: $803
+
+=== JOB 4: Maintenance Contract - Quarterly HVAC ===
+Date: 3/15/2026
+Client: Oakwood Apartments (12 units)
+
+Quarterly maintenance per unit x12 = $720 ($60/unit)
+Filter replacement (standard 16x25x1) x24 = $96
+Condenser cleaning and coil treatment = $0 (included)
+Refrigerant pressure check = $0 (included)
+Thermostat calibration x3 = $0 (included)
+
+Total: $816
+
+=== EDGE CASES ===
+
+Date format variations:
+3/1/26 - short year
+03/01/2026 - leading zeros
+3-15-2026 - dash separator
+
+Multiple amounts on one line:
+Materials: 2x4 lumber x10 @ $4.50 = $45, nails 5lb box @ $12 = $12, wood glue x3 @ $8 = $24
+
+No dollar signs:
+Labor: 3 hours at 75 per hour = 225
+Materials: Paint 1 gallon at 34.99 = 34.99
+
+Text message style (no formatting):
+Hey its Mike from the job site. Need to add 2 more hrs labor $170 also client wants extra outlet installed add $85 for materials and 1 hr labor. Total additional $340
+
+Invoice with tax breakdown:
+Subtotal: $450.00
+Tax (8.5%): $38.25
+Total: $488.25
+
+Partial/incomplete entries:
+3/16 - Started electrical rough-in, 4 hrs @ $95 = 
+Materials: (pending supplier quote)
+
+Multiple dates in one job:
+3/10: Demo and haul-away - $450
+3/12: Framing and electrical rough-in - $1,200
+3/15: Drywall and paint - $850
+Final: 3/18 trim and cleanup - $400
+
+Foreign currency symbols (should ignore or handle):
+Consultation fee: €85.00
+Materials: £45.50
+Total: $130.50 USD
+
+Scientific notation (edge case):
+Micro-component: 1.5e-6 units @ $0.001 = $0.0000015
+
+No spaces around amounts:
+Labor:$150
+Materials:$75
+Total:$225
+
+Parentheses around amounts:
+Labor: ($150)
+Materials: ($75)
+Total: ($225)
+
+Amounts in brackets:
+Labor: [$150]
+Materials: [$75]
+Total: [$225]
+
+Mixed formats in one document:
+Labor 3 hrs @ $75/hr = $225
+Materials: $150.00
+Tax: $31.88
+Total Due: $406.88
+
+No line items, just total:
+Total project cost: $2,500
+
+Itemized with no total:
+Labor: $500
+Materials: $300
+Permits: $150
+
+Negative amounts (refunds/credits):
+Labor: $400
+Materials: $250
+Credit (overcharge): -$50
+Total: $600
+
+Percentage-based line items:
+Labor: $1,000
+Materials: $500
+Project management (10%): $150
+Total: $1,650
+
+Hourly with partial hours:
+Labor: 2.5 hrs @ $80/hr = $200
+Labor: 1.75 hrs @ $80/hr = $140
+Total labor: $340
+
+Multiple workers same rate:
+Mike: 4 hrs @ $85/hr = $340
+Dave: 4 hrs @ $85/hr = $340
+Total: $680
+
+Multiple workers different rates:
+Apprentice: 6 hrs @ $45/hr = $270
+Journeyman: 6 hrs @ $75/hr = $450
+Master: 2 hrs @ $125/hr = $250
+Total: $970
+
+Materials with quantities and units:
+2x4 lumber: 12 pieces @ $4.50 each = $54
+Drywall screws: 1 box (5 lbs) @ $12 = $12
+Joint compound: 2 gallons @ $18 = $36
+Total materials: $102
+
+Bulk pricing in description:
+Paint: $45/gallon (5+ gallons = $40/gal)
+Ordered: 6 gallons @ $40 = $240
+
+Rental equipment by day:
+Boom lift: 3 days @ $275/day = $825
+Delivery/pickup: $150
+Total rental: $975
+
+Permits and fees:
+Building permit: $450
+Electrical permit: $225
+Inspection fee: $85
+Plan review: $150
+Total permits: $910
+
+Subcontractor markup:
+Plumbing work: $1,200 (subcontractor)
+Markup (15%): $180
+Total plumbing: $1,380
+
+Travel time and mileage:
+Travel to site: 45 min @ $75/hr = $56.25
+Mileage: 47 miles @ $0.65/mi = $30.55
+Total travel: $86.80
+
+After hours and emergency rates:
+Regular labor: 6 hrs @ $85 = $510
+After hours (5pm-8pm): 3 hrs @ $127.50 = $382.50
+Emergency weekend: 4 hrs @ $170 = $680
+Total: $1,572.50
+
+Deposits and progress payments:
+Deposit received: -$1,000 (credit)
+Progress payment 1: -$2,500 (credit)
+Balance due: $3,200
+Total project: $6,700
+
+Warranty and guarantee work:
+Original job: $0 (warranty repair)
+Replacement part: $0 (under warranty)
+Labor: $0 (covered)
+Trip charge: $85 (not covered)
+Total: $85
+
+Consultation and estimate fees:
+Site visit/consultation: $150
+Written estimate: $0 (included)
+If work proceeds: -$150 (credited)
+Total if declined: $150
+
+Disposal and environmental fees:
+Old appliance removal: $75
+Recycling fee: $15
+Hazardous disposal (refrigerant): $125
+Dump fee: $45
+Total disposal: $260
+
+Temporary and rental solutions:
+Temporary AC unit (2 weeks): $450
+Rental delivery/setup: $150
+Permanent install credit: -$600
+Net temporary cost: $0
+
+Financing and payment plan fees:
+Job total: $5,400
+Cash/check discount (5%): -$270
+Credit card (no fee): $5,400
+6-month financing (2% fee): $5,508
+Total options: varies
+
+Multiple locations same invoice:
+Site A (123 Main St): Labor $800, Materials $400
+Site B (456 Oak Ave): Labor $600, Materials $350
+Site C (789 Pine Rd): Labor $400, Materials $200
+Combined total: $2,750
+
+Change orders and revisions:
+Original contract: $3,200
+Change order #1 (add outlet): +$450
+Change order #2 (upgrade fixture): +$280
+Change order #3 (remove item): -$150
+Revised total: $3,780
+
+Retainage and holdback:
+Substantial completion: $8,500
+Retainage (10%): -$850
+Amount due now: $7,650
+Retainage release (30 days): $850
+Total contract: $8,500
+
+Liquidated damages and penalties:
+Contract amount: $12,000
+Bonus (early completion): +$500
+Penalty (late, per day): -$250 x 3 days = -$750
+Net amount: $11,750
+
+Insurance and bonding costs:
+Project cost: $25,000
+Performance bond (1%): $250
+Insurance rider: $125
+Subguard (optional): $500
+Total with bonds: $25,875
+
+Prevailing wage and certified payroll:
+Regular labor: 40 hrs @ $45 = $1,800
+Prevailing wage: 40 hrs @ $68.50 = $2,740
+Certified payroll processing: $150
+Total labor: $4,690
+
+Union and non-union mixed:
+Union electrician: 16 hrs @ $95 = $1,520
+Non-union laborer: 24 hrs @ $55 = $1,320
+Union benefits (25%): $380
+Total: $3,220
+
+Material escalation clause:
+Contract price: $5,000 (steel included)
+Steel price increase (10%): +$280
+Material escalation cap (5%): -$140
+Adjusted price: $5,140
+
+Freight and shipping costs:
+Equipment cost: $3,500
+Freight (flat rate): $285
+Lift gate service: $75
+Inside delivery: $150
+Total delivered: $4,010
+
+Crating and packaging:
+Fragile equipment: $2,800
+Export crating: $450
+ISPM-15 certified wood: $125
+Hazardous labeling: $85
+Total crated: $3,460
+
+Customs and duties:
+Imported goods: $8,500
+Customs duty (6.5%): $552.50
+Merchandise processing fee: $27.50
+Harbor maintenance fee: $12.75
+Total landed: $9,092.75
+
+Currency conversion and exchange:
+Invoice in EUR: €7,500
+Exchange rate (1.08): $8,100
+Wire transfer fee: $45
+Foreign exchange fee (1%): $81
+Total USD: $8,226
+
+Letter of credit and documentary collection:
+Sale amount: $15,000
+Letter of credit fee (0.5%): $75
+Documentary collection: $150
+Advising bank fee: $85
+Net proceeds: $14,690
+
+Consignment and sale or return:
+Consignment value: $5,000
+Commission (20%): -$1,000
+Returned goods: -$800
+Net payment: $3,200
+
+Barter and trade-in allowance:
+New equipment: $12,000
+Trade-in allowance: -$3,500
+Net cash due: $8,500
+
+Volume and quantity discounts:
+List price: $25 x 100 units = $2,500
+Volume discount (10%): -$250
+Net price: $2,250
+
+Cash and prompt payment discounts:
+Invoice amount: $3,800
+Terms: 2/10 net 30
+Discount taken (2%): -$76
+Amount paid: $3,724
+
+Trade and functional discounts:
+MSRP: $199
+Trade discount (40%): -$79.60
+Functional discount (10%): -$11.96
+Net price: $107.44
+
+Seasonal and promotional pricing:
+Regular price: $89.99
+Seasonal markdown (25%): -$22.50
+Promotional coupon: -$10.00
+Final price: $57.49
+
+Dynamic and surge pricing:
+Base rate: $120
+Demand multiplier (1.5x): +$60
+Peak time surcharge: +$25
+Total: $205
+
+Subscription and recurring billing:
+Monthly service: $49.99
+Annual discount (2 months free): -$99.98
+Setup fee (waived): $0.00
+First year: $499.92
+
+Usage-based and metered billing:
+Base fee: $25
+Usage: 1,250 units @ $0.10 = $125
+Overage: 50 units @ $0.15 = $7.50
+Total: $157.50
+
+Tiered and volume pricing:
+Units: 750
+Tier 1 (0-500): 500 @ $2.00 = $1,000
+Tier 2 (501-750): 250 @ $1.75 = $437.50
+Total: $1,437.50
+
+Bundled and package pricing:
+Individual items: $45 + $30 + $25 = $100
+Bundle discount (20%): -$20
+Bundle price: $80
+
+Optional add-ons and upsells:
+Base product: $199
+Extended warranty (3yr): +$49
+Premium support: +$25
+Professional installation: +$150
+Total with options: $423
+
+Cross-sell and recommendation engine:
+Cart value: $75
+Frequently bought together: +$35
+Customers also viewed: +$28
+Bundle savings: -$15
+New total: $123
+
+Abandoned cart recovery:
+Cart value: $150
+Recovery discount (10%): -$15
+Free shipping threshold: $35
+Recovered total: $135
+
+Post-purchase upsell:
+Order total: $89
+One-click upsell: +$29
+Order bump: +$15
+New total: $133
+
+Referral and affiliate program:
+Purchase: $200
+Referral discount (20%): -$40
+Affiliate commission (10%): -$20
+Net: $140
+
+Loyalty and rewards program:
+Purchase: $75
+Points earned: 750 ($7.50 value)
+Points redeemed: 500 ($5.00)
+Net after points: $70
+
+Membership and VIP program:
+Annual membership: $99
+Member price: $45 (non-member: $55)
+Savings: $10 per order
+Break-even: 10 orders
+
+Gift card and store credit:
+Purchase: $60
+Gift card payment: $40
+Credit card: $20
+Remaining balance: $10
+
+Promo code and coupon:
+Subtotal: $120
+Promo code SAVE20: -$24
+Free shipping code: -$8.95
+Total: $87.05
+
+Student and military discount:
+Regular price: $199
+Student verification: -$30
+Military ID: -$40
+Stackable: No (highest applies)
+Final: $159
+
+First responder and teacher discount:
+Full price: $89
+First responder: -$15
+Teacher: -$15
+Proof required: Yes
+Discounted: $74
+
+Senior and AARP discount:
+Standard: $75
+Senior (65+): -$10
+AARP member: Additional -$5
+Combined: $60
+
+Corporate and volume pricing:
+List: $500/unit
+Corporate rate: $400/unit (100+)
+Enterprise: $350/unit (500+)
+Govt: $425/unit (no min)
+
+Nonprofit and educational pricing:
+Commercial: $299
+501(c)(3): $199
+School/university: $149
+K-12: $99
+
+Startup and small business pricing:
+Enterprise: $999/year
+Startup (<2yr): $499/year
+Small biz (<10 emp): $699/year
+Solo founder: $299/year
+
+Open source and community edition:
+Enterprise: $50/user/month
+Open source: $0 (self-hosted)
+Community: $10/user/month
+Pro: $25/user/month

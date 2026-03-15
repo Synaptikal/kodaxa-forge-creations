@@ -1,0 +1,24 @@
+Name,Price,SKU,Description,Category,Quantity,Modifiers,Variant Name
+"Espresso Shot (Double) - Extra Hot!",3.50,ESP-DBL-001,"Rich, bold double shot. 2oz serving. Caffeine: ~150mg. Warning: very hot!",Beverages,150,"Extra Hot,Iced,Extra Shot (+$0.50),Oat Milk (+$0.75)","Double Shot"
+"Sandwich - Turkey & Swiss (Half Portion)",6.75,SND-TUR-HF,"Oven-roasted turkey with Swiss. Contains: wheat, dairy, soy. Half portion - full size also available.",Food,45,"No Mayo,Extra Mustard,Toast Bread,Add Bacon (+$2.00),No Cheese","Half Size"
+"Custom Cake Order - 8\" Round (48hr notice)",45.00,CAKE-8-001,"Special order. 48-hour notice required. Deposit: $20 non-refundable. Serves 12-15.",Bakery,5,"Vanilla/Chocolate/Red Velvet,Buttercream/Fondant,Gluten Free (+$10),Vegan (+$8)","8 inch Round"
+"Gift Card - Variable Amount ($5-$500)",,GC-VAR-001,"Load any amount $5-$500. No expiration. Non-refundable. Not redeemable for cash.",Gift Cards,999,"$25/$50/$75/$100/$200/$500","Variable"
+"Seasonal Item - Pumpkin Spice (Sept-Nov only)",5.25,PSL-001,"Limited time. Available Sept-Nov only. Real pumpkin puree. May contain traces of nuts.",Seasonal,0,"Whipped Cream,Extra Shot,Oat Milk,Almond Milk","12oz"
+"Item with (Parentheses) & Special Characters: @#$%",19.95,TEST-001,"Testing special chars: @ # $ % ^ & * ( ) _ + { } [ ] | \ : ; "" < > ? /",Test,45,"Option (A),Option (B),Option [C]","Standard"
+"Multi
+Line
+Item
+Name",34.50,ML-001,"Line 1: Product specs
+Line 2: Usage
+Line 3: Warranty info",Multi,22,"Mod 1,Mod 2,Mod 3","Variant"
+"   Leading and Trailing Whitespace   ",8.99,SPACE-001,"Item with extra whitespace in name field",Whitespace,100,"None","Standard"
+"",0.00,EMPTY-001,"Empty item name field",Test,50,"None","Standard"
+"Item with no price",,NO-PRICE-001,"Missing price field",Inventory,75,"None","Standard"
+"Negative Quantity (Oversold)",25.00,NEG-QTY-001,"Negative inventory quantity",Inventory,-5,"None","Standard"
+"Zero Price Item",0.00,FREE-001,"Free promotional item",Promotions,100,"None","Free"
+"Price with Many Decimals",9.99999,DECIMAL-001,"Price rounds to $10.00",Pricing,50,"None","Standard"
+"SKU with spaces and-dashes",19.99,SKU TEST-001,"SKU has spaces in it",Inventory,25,"None","Standard"
+"Emoji Item 🍕🍔🍟",8.99,EMOJI-001,"Food with emojis 🔥💯👍",Food,20,"Spicy 🌶️,Extra 🧀","Large 🍕"
+"Very Low Stock Item",12.00,LOW-001,"Only 1 left in stock",Inventory,1,"None","Single"
+"Unicode Item Ñoño 日本語",22.00,UNI-001,"Item with unicode characters",Global,85,"None","Standard"
+"Item with 'Single' and ""Double"" Quotes",16.75,QUOTE-001,"Name with mixed quote types",Test,40,"None","Standard"

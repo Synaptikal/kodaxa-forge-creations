@@ -1,0 +1,20 @@
+Item Name,Sales Price,Purchase Cost,On Hand,Description,Item Type,Preferred Vendor,Manufacturer Part Number
+"Widget Pro 2000",29.99,12.50,150,"Professional-grade widget. Color: blue. Weight: 2.3 lbs. Made in USA.",Inventory Part,Acme Supply Co,WP-2000-BLU
+"Consulting Service - Hourly",150.00,75.00,0,"Professional consulting. Billed in 15-min increments. Minimum 1 hour.",Service,Internal,CONSULT-001
+"Assembly Labor (per unit)",45.00,22.50,0,"Labor cost for product assembly. Includes QC and packaging.",Service,Internal,LABOR-ASM
+"Gift Card - $25",25.00,25.00,999,"Plastic gift card. No expiration. Non-refundable.",Non-Inventory Part,Internal,GC-25
+"Seasonal Decoration (Holiday)",12.99,5.25,0,"Limited time. Available Oct-Dec only. Returns accepted until Jan 15.",Inventory Part,Holiday Imports,SEASON-XMAS
+"Item with (Parentheses) & Special Chars",19.95,8.00,45,"Description with: @ # $ % ^ & * ( ) _ + { } [ ] | \ : ; "" < > ? /",Inventory Part,Test Vendor,TEST-SPEC-001
+"Multi-Line Item Description Here",34.50,15.75,22,"Line 1: Product specs
+Line 2: Usage instructions
+Line 3: Warranty info",Inventory Part,MultiLine Corp,ML-001
+"   Leading and Trailing Spaces   ",8.99,4.00,100,"Item with extra whitespace in name",Inventory Part,Space Vendor,SPACE-001
+"",0.00,0.00,0,"Empty item name - should be handled",Inventory Part,Test,EMPTY
+"Item with No Price",,5.00,50,"Missing sales price",Inventory Part,NoPrice Inc,NO-PRICE
+"Negative Inventory Item",25.00,10.00,-5,"Oversold item showing negative quantity",Inventory Part,Oversold Corp,NEG-QTY
+"Very Long Price",1234567.89,987654.32,1,"Expensive item with many digits",Inventory Part,Luxury Goods,EXP-001
+"Zero Cost Item",15.00,0.00,200,"Item with no purchase cost",Inventory Part,Promo Vendor,FREE-COST
+"Date in Name 03/15/2026",29.99,12.00,75,"Item with date formatted name",Inventory Part,Date Vendor,DATE-001
+"Item|With|Pipe|Characters",18.50,8.25,60,"Name with pipe characters",Inventory Part,Pipe Corp,PIPE-001
+"Unicode Item Ñoño 日本語",22.00,11.00,85,"Item with unicode characters",Inventory Part,Global Imports,UNI-001
+"Item with 'Single' and ""Double"" Quotes",16.75,7.50,40,"Name with mixed quote types",Inventory Part,Quote Test,QUOTE-001

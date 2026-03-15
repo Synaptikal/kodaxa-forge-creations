@@ -1,0 +1,11 @@
+Item Name,Variation Name,SKU,Description,Price,Category,Modifiers
+Organic Coffee Beans,12oz Bag,COF-12OZ-001,Single origin Ethiopian beans,14.99,Beverages,None
+Organic Coffee Beans,5lb Bag,COF-5LB-002,Bulk roasted coffee beans,45.00,Beverages,None
+Artisan Sourdough,Loaf,BREAD-SOUR-001,Fresh baked daily,6.50,Bakery,Slice Option
+Artisan Sourdough,Half Loaf,BREAD-SOUR-002,Perfect for small households,3.75,Bakery,Slice Option
+Vanilla Bean Candle,8oz,CAND-VAN-001,Hand-poured soy candle,18.00,Home,Scent Strength
+Vanilla Bean Candle,16oz,CAND-VAN-002,Long-lasting burn time,28.00,Home,Scent Strength
+Ceramic Mug,White,MUG-WHT-001,12oz capacity with handle,12.00,Merchandise,Gift Wrap
+Ceramic Mug,Black,MUG-BLK-002,Matte finish,12.00,Merchandise,Gift Wrap
+Tote Bag,Canvas,TOTE-CAN-001,Reusable shopping bag,8.00,Accessories,Monogram
+Gift Card,$25,GC-25-001,Digital or physical card,25.00,Gift Cards,None

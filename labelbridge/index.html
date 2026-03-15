@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LabelBridge — CSV Formatters for Real Work</title>
+  <meta name="description" content="Browser-based tools that fix the CSV mismatches between your POS and your label printer, invoicing tool, or new platform. No account. No uploads." />
+  <meta property="og:title"       content="LabelBridge — CSV Formatters for Real Work" />
+  <meta property="og:description" content="Fix the exact format mismatch between your software and your hardware. Runs in your browser." />
+  <meta property="og:type"        content="website" />
+
+  <style>
+    /* ── Tokens ──────────────────────────────────────────────────────────── */
+    :root {
+      --ink:        #1a1612;
+      --ink-2:      #3d3530;
+      --ink-3:      #7a6f68;
+      --paper:      #faf7f2;
+      --paper-2:    #f0ebe2;
+      --paper-3:    #e4ddd1;
+      --tape:       #f5c842;   /* Dymo tape amber */
+      --tape-dark:  #c9991a;
+      --tape-light: #fdf4c7;
+      --rule:       #d4cdc4;
+      --mono: "Courier New", Courier, monospace;
+      --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --radius: 4px;
+    }
+
+    /* ── Reset ───────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Nav ─────────────────────────────────────────────────────────────── */
+    nav {
+      background: var(--ink);
+      border-bottom: 3px solid var(--tape);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--paper);
+      letter-spacing: .02em;
+    }
+    .nav-logo .tape { color: var(--tape); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-size: .82rem; color: var(--ink-3); letter-spacing: .04em; text-transform: uppercase; transition: color .15s; }
+    .nav-links a:hover { color: var(--tape); }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: .82rem; font-weight: 700;
+      background: var(--tape); color: var(--ink);
+      padding: .4rem 1rem; border-radius: var(--radius);
+      letter-spacing: .02em;
+      transition: background .15s;
+    }
+    .nav-cta:hover { background: var(--tape-dark); color: #fff; }
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+    .section { padding: 5rem 0; }
+
+    /* ── Hero ────────────────────────────────────────────────────────────── */
+    .hero {
+      background: var(--ink);
+      padding: 5rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ruled-line texture */
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 27px,
+        rgba(255,255,255,.04) 27px,
+        rgba(255,255,255,.04) 28px
+      );
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: var(--mono); font-size: .72rem;
+      color: var(--tape); letter-spacing: .12em; text-transform: uppercase;
+      border: 1px solid rgba(245,200,66,.3);
+      padding: .3rem .75rem; border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+    }
+    .hero-tag::before { content: "▸"; }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.1;
+      color: var(--paper);
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--tape); }
+
+    .hero-sub {
+      font-size: 1rem; color: var(--ink-3);
+      line-height: 1.7; max-width: 420px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+    .btn-tape {
+      font-family: var(--mono); font-size: .9rem; font-weight: 700;
+      background: var(--tape); color: var(--ink);
+      padding: .7rem 1.5rem; border-radius: var(--radius);
+      transition: background .15s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-tape:hover { background: var(--tape-dark); color: #fff; }
+    .btn-ghost {
+      font-family: var(--mono); font-size: .85rem;
+      color: var(--ink-3); border: 1px solid rgba(255,255,255,.15);
+      padding: .7rem 1.5rem; border-radius: var(--radius);
+      transition: border-color .15s, color .15s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-ghost:hover { border-color: var(--tape); color: var(--tape); }
+
+    /* ── Label Demo (CSS-rendered) ───────────────────────────────────────── */
+    .label-demo {
+      position: relative;
+      display: flex; flex-direction: column; gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .label-spool {
+      position: absolute;
+      top: -24px; right: -16px;
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(var(--ink-2) 0deg, var(--ink-3) 60deg, var(--ink-2) 120deg, var(--ink-3) 180deg, var(--ink-2) 240deg, var(--ink-3) 300deg, var(--ink-2) 360deg);
+      border: 6px solid var(--ink-2);
+      opacity: .6;
+    }
+
+    .label-card {
+      background: var(--tape);
+      border-radius: 3px;
+      padding: 1rem 1.25rem;
+      width: 240px;
+      box-shadow: 3px 3px 0 rgba(0,0,0,.35);
+      position: relative;
+      font-family: var(--mono);
+    }
+    .label-card::before {
+      content: "";
+      position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+      background: rgba(0,0,0,.15);
+      border-radius: 3px 0 0 3px;
+    }
+    .label-card .lc-title { font-size: .65rem; color: var(--ink-2); text-transform: uppercase; letter-spacing: .1em; margin-bottom: .25rem; }
+    .label-card .lc-name  { font-size: 1.05rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
+    .label-card .lc-sub   { font-size: .72rem; color: var(--ink-2); margin-top: .15rem; }
+    .label-card .lc-price { font-size: 1.4rem; font-weight: 900; color: var(--ink); margin-top: .6rem; }
+    .label-card .lc-sku   { font-size: .62rem; color: var(--ink-2); margin-top: .1rem; letter-spacing: .06em; }
+
+    /* barcode lines */
+    .label-card .barcode {
+      display: flex; gap: 2px; align-items: flex-end;
+      margin-top: .75rem; height: 28px;
+    }
+    .barcode span {
+      display: block;
+      background: var(--ink);
+      border-radius: 1px;
+    }
+
+    .label-card.ghost-card {
+      background: rgba(245,200,66,.18);
+      border: 1.5px dashed rgba(245,200,66,.4);
+      box-shadow: none;
+    }
+    .label-card.ghost-card .lc-name { color: rgba(245,200,66,.5); }
+    .label-card.ghost-card .lc-sub  { color: rgba(245,200,66,.3); }
+    .label-card.ghost-card .lc-price { color: rgba(245,200,66,.5); }
+
+    .label-arrow {
+      font-family: var(--mono); font-size: .78rem;
+      color: var(--tape); display: flex; align-items: center; gap: .5rem;
+      align-self: flex-end;
+    }
+    .label-arrow::before { content: ""; display: block; height: 1px; width: 80px; background: rgba(245,200,66,.3); }
+
+    /* ── Trust Row ───────────────────────────────────────────────────────── */
+    .trust-row {
+      background: var(--paper-2);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: .85rem 1.5rem;
+    }
+    .trust-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
+    }
+    .trust-item { font-family: var(--mono); font-size: .75rem; color: var(--ink-3); display: flex; align-items: center; gap: .5rem; }
+    .trust-item::before { content: "✓"; color: var(--tape-dark); font-weight: 900; }
+
+    /* ── Tools Grid ──────────────────────────────────────────────────────── */
+    .tools-section { background: var(--paper); }
+    .section-label {
+      font-family: var(--mono); font-size: .7rem;
+      color: var(--ink-3); text-transform: uppercase; letter-spacing: .12em;
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 2.5rem;
+    }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; border: 1.5px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
+
+    .tool-card {
+      padding: 2rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: background .15s;
+      position: relative;
+    }
+    .tool-card:nth-child(2n) { border-right: none; }
+    @media (min-width: 960px) {
+      .tool-card:nth-child(2n)   { border-right: 1px solid var(--rule); }
+      .tool-card:nth-child(4n)   { border-right: none; }
+    }
+    .tool-card:hover { background: var(--paper-2); }
+
+    /* Tape strip on hover */
+    .tool-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--tape);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .2s ease;
+    }
+    .tool-card:hover::before { transform: scaleX(1); }
+
+    .tool-label {
+      font-family: var(--mono); font-size: .65rem;
+      color: var(--ink-3); text-transform: uppercase; letter-spacing: .1em;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tool-badge {
+      background: var(--tape-light); color: var(--tape-dark);
+      font-size: .62rem; font-weight: 700;
+      padding: .1rem .45rem; border-radius: 2px;
+      letter-spacing: .05em;
+    }
+
+    .tool-card h3 { font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.25; }
+    .tool-card p  { font-size: .875rem; color: var(--ink-3); line-height: 1.65; flex: 1; }
+
+    .tag-row { display: flex; gap: .35rem; flex-wrap: wrap; }
+    .tag {
+      font-family: var(--mono); font-size: .65rem;
+      padding: .15rem .45rem;
+      background: var(--paper-3); color: var(--ink-3);
+      border-radius: 2px;
+    }
+
+    .tool-link {
+      font-family: var(--mono); font-size: .78rem; font-weight: 700;
+      color: var(--tape-dark); display: inline-flex; align-items: center; gap: .3rem;
+      margin-top: auto;
+      transition: gap .15s;
+    }
+    .tool-link:hover { gap: .55rem; }
+
+    /* ── How Section ─────────────────────────────────────────────────────── */
+    .how-section {
+      background: var(--ink);
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent, transparent 27px,
+        rgba(255,255,255,.03) 27px, rgba(255,255,255,.03) 28px
+      );
+    }
+    .how-section .section-label { color: rgba(245,200,66,.5); }
+    .how-section .section-label::after { background: rgba(245,200,66,.15); }
+    .how-section h2 { color: var(--paper); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: 3rem; }
+
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; }
+    .step-item {
+      padding: 1.75rem;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+    .step-item:last-child { border-right: none; }
+    @media (max-width: 640px) { .step-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); } }
+
+    .step-num {
+      font-family: var(--mono); font-size: .65rem; font-weight: 700;
+      color: var(--tape); letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+    .step-item h4 { font-size: .95rem; font-weight: 700; color: var(--paper); margin-bottom: .4rem; }
+    .step-item p  { font-size: .82rem; color: var(--ink-3); line-height: 1.6; }
+
+    /* ── Why Section ─────────────────────────────────────────────────────── */
+    .why-section { background: var(--paper-2); border-top: 1.5px solid var(--rule); border-bottom: 1.5px solid var(--rule); }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; border: 1.5px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
+    .why-item { padding: 1.75rem; border-right: 1px solid var(--rule); }
+    .why-item:last-child { border-right: none; }
+    @media (max-width: 640px) { .why-item { border-right: none; border-bottom: 1px solid var(--rule); } }
+    .why-item .why-kicker { font-family: var(--mono); font-size: .65rem; color: var(--tape-dark); text-transform: uppercase; letter-spacing: .1em; margin-bottom: .6rem; }
+    .why-item h4 { font-size: .95rem; font-weight: 800; margin-bottom: .5rem; }
+    .why-item p  { font-size: .83rem; color: var(--ink-3); line-height: 1.65; }
+
+    /* ── CTA Band ─────────────────────────────────────────────────────────── */
+    .cta-band {
+      background: var(--tape);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .cta-band h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; letter-spacing: -.03em; color: var(--ink); margin-bottom: .6rem; }
+    .cta-band p  { color: var(--ink-2); font-size: .95rem; margin-bottom: 1.75rem; }
+    .btn-dark {
+      font-family: var(--mono); font-size: .9rem; font-weight: 700;
+      background: var(--ink); color: var(--tape);
+      padding: .75rem 1.75rem; border-radius: var(--radius);
+      transition: background .15s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-dark:hover { background: var(--ink-2); }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      border-top: 3px solid var(--tape);
+      padding: 3rem 1.5rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem;
+    }
+    @media (max-width: 640px) { .footer-inner { grid-template-columns: 1fr; gap: 2rem; } }
+    .footer-logo { font-family: var(--mono); font-size: 1.05rem; font-weight: 700; color: var(--paper); margin-bottom: .6rem; }
+    .footer-logo span { color: var(--tape); }
+    .footer-desc { font-size: .82rem; color: var(--ink-3); line-height: 1.65; max-width: 260px; }
+    .footer-col h5 { font-family: var(--mono); font-size: .67rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); margin-bottom: .85rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .footer-col ul a { font-size: .83rem; color: var(--ink-3); transition: color .15s; }
+    .footer-col ul a:hover { color: var(--tape); }
+    .footer-bottom {
+      max-width: 1080px; margin: 2rem auto 0;
+      padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.07);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      font-family: var(--mono); font-size: .7rem; color: var(--ink-3);
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 760px) {
+      .nav-links  { display: none; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .label-demo { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ── -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">Label<span class="tape">Bridge</span></div>
+      <div class="nav-links">
+        <a href="#tools">Tools</a>
+        <a href="#how">How It Works</a>
+        <a href="#why">Why Free</a>
+      </div>
+      <a class="nav-cta" href="#tools">Browse Tools</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-tag">CSV Formatter · No account · Browser only</div>
+        <h1>Your POS exports it.<br>Your printer <em>won't read it.</em></h1>
+        <p class="hero-sub">
+          We fix the exact column mismatch between Square, Clover, and QuickBooks exports and the label printers and platforms they refuse to work with.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-tape" href="#tools">Pick your fix ↓</a>
+          <a class="btn-ghost" href="#how">How it works</a>
+        </div>
+      </div>
+
+      <!-- CSS Label Mockup -->
+      <div class="label-demo">
+        <div class="label-spool"></div>
+
+        <!-- "Before" ghosted card -->
+        <div class="label-card ghost-card">
+          <div class="lc-title">Square Export (broken)</div>
+          <div class="lc-name">Transaction ID, Item, Variation,<br>Category, SKU, Gross Sales…</div>
+          <div class="lc-sub">12 columns your printer ignores</div>
+        </div>
+
+        <div class="label-arrow">→ LabelBridge</div>
+
+        <!-- "After" clean label -->
+        <div class="label-card">
+          <div class="lc-title">Label-ready</div>
+          <div class="lc-name">Ceramic Pour Mug</div>
+          <div class="lc-sub">12 oz · Matte Black</div>
+          <div class="lc-price">$24.00</div>
+          <div class="lc-sku">SKU: MUG-12-BLK</div>
+          <div class="barcode">
+            <span style="width:2px;height:28px"></span><span style="width:1px;height:22px"></span>
+            <span style="width:3px;height:28px"></span><span style="width:1px;height:18px"></span>
+            <span style="width:2px;height:25px"></span><span style="width:1px;height:28px"></span>
+            <span style="width:3px;height:20px"></span><span style="width:1px;height:28px"></span>
+            <span style="width:2px;height:24px"></span><span style="width:1px;height:28px"></span>
+            <span style="width:3px;height:18px"></span><span style="width:2px;height:28px"></span>
+            <span style="width:1px;height:22px"></span><span style="width:3px;height:28px"></span>
+            <span style="width:1px;height:20px"></span><span style="width:2px;height:26px"></span>
+            <span style="width:1px;height:28px"></span><span style="width:3px;height:21px"></span>
+            <span style="width:1px;height:28px"></span><span style="width:2px;height:24px"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trust Bar ── -->
+  <div class="trust-row">
+    <div class="trust-inner">
+      <span class="trust-item">Files never leave your device</span>
+      <span class="trust-item">No account required</span>
+      <span class="trust-item">Works offline</span>
+      <span class="trust-item">Open source</span>
+      <span class="trust-item">Free forever</span>
+    </div>
+  </div>
+
+  <!-- ── Tools ── -->
+  <section class="section tools-section" id="tools">
+    <div class="container">
+      <div class="section-label">Available tools</div>
+      <div class="tools-grid">
+
+        <a class="tool-card" href="/square-to-dymo/">
+          <div class="tool-label">
+            <span>001 · Label Printer</span>
+            <span class="tool-badge">POPULAR</span>
+          </div>
+          <h3>Square → Dymo / Brother</h3>
+          <p>Strips your Square Item Library or Order export to the three columns your label printer actually uses. Supports Dymo Connect and Brother P-touch Editor import formats.</p>
+          <div class="tag-row">
+            <span class="tag">Square POS</span><span class="tag">Dymo</span><span class="tag">Brother QL</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+        <a class="tool-card" href="/clover-to-brother/">
+          <div class="tool-label"><span>002 · Label Printer</span></div>
+          <h3>Clover → Brother P-touch</h3>
+          <p>Converts your Clover inventory or order export for Brother P-touch Editor's database import. Handles both inventory and order schemas with separate validation per type.</p>
+          <div class="tag-row">
+            <span class="tag">Clover POS</span><span class="tag">Brother P-touch</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+        <a class="tool-card" href="/text-to-table/">
+          <div class="tool-label">
+            <span>003 · Invoicing</span>
+            <span class="tool-badge">NEW</span>
+          </div>
+          <h3>Contractor Notes → Excel Table</h3>
+          <p>Paste messy contractor texts or WhatsApp messages. Finds dates, dollar amounts, and line items. Editable before copy — then paste straight into Excel or Google Sheets.</p>
+          <div class="tag-row">
+            <span class="tag">Contractors</span><span class="tag">Excel</span><span class="tag">Invoicing</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+        <a class="tool-card" href="/qb-to-shopify/">
+          <div class="tool-label"><span>004 · Migration</span></div>
+          <h3>QuickBooks Desktop → Shopify</h3>
+          <p>Recipe-based CSV cleaner for the broken export QuickBooks Desktop produces. Apply only the fixes you need: fix dates, remap headers, remove blank rows, generate handles.</p>
+          <div class="tag-row">
+            <span class="tag">QuickBooks</span><span class="tag">Shopify</span><span class="tag">Migration</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+        <a class="tool-card" href="/square-to-zebra/">
+          <div class="tool-label"><span>005 · Label Printer</span></div>
+          <h3>Square → Zebra</h3>
+          <p>Convert Square Item Library or Order exports into ZebraDesigner-compatible format. Clean columns for Zebra label printers with proper SKU, price, and category fields.</p>
+          <div class="tag-row">
+            <span class="tag">Square POS</span><span class="tag">Zebra</span><span class="tag">ZebraDesigner</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+        <a class="tool-card" href="/shopify-to-dymo/">
+          <div class="tool-label"><span>006 · Label Printer</span></div>
+          <h3>Shopify → Dymo</h3>
+          <p>Convert Shopify product exports into Dymo Connect-ready format for shelf and price labels. Supports both Products export and Order line items with vendor and sale price fields.</p>
+          <div class="tag-row">
+            <span class="tag">Shopify</span><span class="tag">Dymo</span><span class="tag">Price Labels</span>
+          </div>
+          <span class="tool-link">Open tool →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="how-section section" id="how">
+    <div class="container">
+      <div class="section-label" style="color:rgba(245,200,66,.5);--rule-color:rgba(245,200,66,.15)">The process</div>
+      <h2>Done in under 30 seconds.</h2>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">Step 01</div>
+          <h4>Upload your export</h4>
+          <p>Drop the CSV straight from your POS or accounting software. Or paste text directly into the tool.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">Step 02</div>
+          <h4>Preview the result</h4>
+          <p>See exactly how columns will map before anything downloads. Edit any cell that looks wrong.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">Step 03</div>
+          <h4>Download or copy</h4>
+          <p>Get a clean, correctly-formatted file or copy the table to your clipboard for Excel.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">Step 04</div>
+          <h4>Import as normal</h4>
+          <p>Use the fixed file in Dymo Connect, Brother P-touch, Shopify, or Excel — exactly as usual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Why Free ── -->
+  <section class="why-section section" id="why">
+    <div class="container">
+      <div class="section-label">Why these tools exist</div>
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="why-kicker">Privacy</div>
+          <h4>No server. Ever.</h4>
+          <p>Every tool runs in your browser. Your inventory, orders, and customer data never touch a server because there is no server.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-kicker">Focus</div>
+          <h4>One tool, one problem.</h4>
+          <p>Each tool is named after the exact software collision it solves. No generic converters — just the specific fix you searched for.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-kicker">Access</div>
+          <h4>No friction. No paywall.</h4>
+          <p>No account. No email. No trial. No export limit. Every feature on every tool is free, permanently.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-kicker">Origin</div>
+          <h4>Built from real frustration.</h4>
+          <p>Every tool here exists because an office manager spent two hours doing manually what should take 30 seconds.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <div class="cta-band">
+    <h2>Stop reformatting files by hand.</h2>
+    <p>Pick the tool that matches your exact problem.</p>
+    <a class="btn-dark" href="#tools">Browse all tools ↑</a>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">Label<span>Bridge</span></div>
+        <p class="footer-desc">Browser-based CSV formatting tools for shop owners, office managers, and contractors. No account. No uploads. No nonsense.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Tools</h5>
+        <ul>
+          <li><a href="/square-to-dymo/">Square → Dymo / Brother</a></li>
+          <li><a href="/clover-to-brother/">Clover → Brother P-touch</a></li>
+          <li><a href="/text-to-table/">Contractor Notes → Excel</a></li>
+          <li><a href="/qb-to-shopify/">QuickBooks → Shopify</a></li>
+          <li><a href="/square-to-zebra/">Square → Zebra</a></li>
+          <li><a href="/shopify-to-dymo/">Shopify → Dymo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Project</h5>
+        <ul>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#why">Why Free</a></li>
+          <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener">Buy me a coffee ☕</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 LabelBridge · All processing in your browser · No data collected</span>
+      <span>Built by a human who got tired of doing this manually</span>
+    </div>
+  </footer>
+
+</body>
+</html>

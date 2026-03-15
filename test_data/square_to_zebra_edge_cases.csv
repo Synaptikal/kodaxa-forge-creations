@@ -1,0 +1,24 @@
+Item Name,Variation Name,SKU,Description,Price,Category,Product Name,Product Quantity,Product Options,Order ID,Customer Name
+"Thermal Label Roll - 4x6\" (Compatible)",,LBL-4x6-001,"4x6 inch direct thermal labels. BPA-free. Compatible with Zebra, Rollo, Brother. 250 labels/roll.",24.99,Supplies,,,,,
+"Barcode Scanner - USB & Wireless",Standard,SCAN-USB-BT,"2D barcode scanner. USB-C cable + Bluetooth 5.0. Scans QR, Code 128, UPC, PDF417. Range: 100ft.",149.00,Equipment,,,,,
+"Receipt Printer - Thermal (80mm)",Ethernet/Wifi,PRNT-80MM,"High-speed thermal printer. 300mm/sec. Auto-cutter. ESC/POS compatible. Power: AC 100-240V.",189.00,Equipment,,,,,
+"Cash Drawer - 16\" (5 Bill/5 Coin)",Black,DRAW-16-BLK,"Heavy-duty steel drawer. 3-position lock. Media slot. RJ11/RJ12 interface. Dimensions: 16\"W x 16\"D x 4\"H.",89.00,Equipment,,,,,
+"iPad Stand - Swivel & Lock (10.2\")",Space Gray,STAND-IPAD-102,"Secure iPad stand. 360° swivel. Key lock included. Cable management. Fits iPad 7th/8th/9th gen.",79.00,Accessories,,,,,
+"Payment Terminal Stand - Verifone",Universal,STAND-VX-001,"Adjustable angle stand for Verifone terminals. Adhesive base. 0-60° tilt. Compatible: Vx520, Vx805.",45.00,Accessories,,,,,
+"Cable - USB-C to USB-A (6ft, Braided)",Black,CABLE-USBC-6,"Braided nylon cable. 3A fast charging. Data sync: USB 2.0 (480Mbps). 10,000+ bend tested.",12.99,Accessories,,,,,
+"Surge Protector - 8 Outlet (15A)",,SURG-8-15A,"8 AC outlets. 6ft cord. 1500 joules protection. LED indicator. Wall mountable. UL listed.",24.99,Electrical,,,,,
+"Battery Backup - UPS (600VA)",,UPS-600VA,"600VA/330W UPS. 6 outlets (3 battery+surge, 3 surge only). USB monitoring. 3-year warranty.",89.00,Electrical,,,,,
+"Order #1001 - Multiple Items",,,,,,Thermal Label Roll - 4x6" (Compatible),2,,#1001,John Smith
+"Order #1001 - Multiple Items",,,,,,Barcode Scanner - USB & Wireless,1,,#1001,John Smith
+"Order #1002 - Service Only",,,,,,Consulting Service - Hourly,4,Remote session,#1002,Jane Doe
+"Order #1003 - With Options",,,,,,T-Shirt (Unisex) - 100% Cotton,3,"Size: XL, Color: Navy, Custom Print: Logo",#1003,Bob "The Builder" Johnson
+"Order #1004 - Empty Customer",,,,,,iPad Stand - Swivel & Lock (10.2"),1,,#1004,
+"Order #1005 - Long Options",,,,,,Receipt Printer - Thermal (80mm),2,"Connectivity: Ethernet, Power: 110V, Interface: USB + Serial, Auto-cutter: Yes, Warranty: 3 year",#1005,Alice Wonderland
+"Order #1006 - Unicode Customer",,,,,,Cash Drawer - 16" (5 Bill/5 Coin),1,,#1006,François Müller
+"Order #1007 - Special Chars",,,,,,Payment Terminal Stand - Verifone,1,,#1007,O'Connor & Associates LLC
+"Order #1008 - Multi-line Options",,,,,,Cable - USB-C to USB-A (6ft Braided),5,"Color: Black
+Length: 6ft
+Connector: USB-C to USB-A
+Braided: Yes",#1008,Test Customer
+"Order #1009 - Empty Options",,,,,,Surge Protector - 8 Outlet (15A),1,,#1009,Regular Customer
+"Order #1010 - Zero Quantity",,,,,,Battery Backup - UPS (600VA),0,,#1010,Zero Buyer
